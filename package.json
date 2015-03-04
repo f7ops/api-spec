@@ -1,0 +1,18 @@
+{
+  "name": "project-api-specs",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Will O'Brien",
+  "license": "None",
+  "dependencies": {
+    "chai": "^2.1.0",
+    "coffee-script": "^1.9.1",
+    "dotenv": "^0.5.1",
+    "mocha": "^2.1.0",
+    "superagent": "^0.21.0"
+  }
+}
