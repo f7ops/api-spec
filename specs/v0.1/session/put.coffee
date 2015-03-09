@@ -1,9 +1,7 @@
 
-
-console.log "-- Sessions --"
-
+Promise = require('es6-promise').Promise
 request = require('superagent')
-sharedErrors = require('./shared/errors')
+sharedErrors = require('../shared/errors')
 expect = require('chai').expect
 
 createUser = (email, password) ->
@@ -86,23 +84,8 @@ describe "PUT /session", ->
             @resp = resp
             done()
 
-    it "status 201"
-    it "sets the cookies"
-    it "can be validated with /me"
+    xit "status 201"
+    xit "sets the cookies"
+    xit "can be validated with /me"
 
-describe "DELETE /session", ->
-  context "with existing session", ->
 
-    xit "removes the cookie"
-    xit "status 204"
-
-  context "with no session", ->
-    xit "returns 201"
-
-describe "GET /me", ->
-  context "with session", ->
-    xit "returns user's email"
-    xit "is successful"
-
-  context "without session", ->
-    xit "'unauthorized' error"
