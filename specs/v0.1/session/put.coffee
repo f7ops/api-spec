@@ -84,8 +84,17 @@ describe "PUT /session", ->
             @resp = resp
             done()
 
-    xit "status 201"
-    xit "sets the cookies"
-    xit "can be validated with /me"
+    it "status 204",->
+      expect(@resp["status"]).to.eq(204)
+
+    it "is application/json",->
+      expect(@resp["header"]["content-type"]).to.eq("application/json; charset=utf-8")
+
+    it "sets the session cookie",->
+      expect(@resp["header"]["set-cookie"]).to.eq("")
+
+    xit "can be validated with /me", ->
+      # TODO
+
 
 
