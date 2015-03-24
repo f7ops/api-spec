@@ -77,16 +77,15 @@ describe "POST /sign-up/<token>", ->
     it "status 204",->
       expect(@resp["status"]).to.eq(204)
 
-    it "is application/json",->
-      expect(@resp["header"]["content-type"]).to.eq("application/json; charset=utf-8")
-
     it "can authenticate the new user", (done) ->
       request
         .put("#{process.env.API_PATH}/session")
         .send({"email": @email, "password": @password})
         .end (err, resp) ->
           expect(resp["status"]).to.eq(204)
+          done()
 
+  # TODO - Need to test invalid token
   context "with email taken", ->
     before (done) ->
       gen.user()

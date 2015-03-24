@@ -3,6 +3,7 @@ Promise = require('es6-promise').Promise
 request = require('superagent')
 sharedErrors = require('../shared/errors')
 expect = require('chai').expect
+gen = require('../shared/generators')
 
 createUser = (email, password) ->
   new Promise((resolve, reject) ->
@@ -69,32 +70,29 @@ describe "PUT /session", ->
 
   context "with valid params", ->
     before (done) ->
-      @email = "real@example.com"
       @password = "secret-password"
-      createUser(@email, @password)
-      .then =>
-        request
-          .put("#{process.env.API_PATH}/session")
-          .send({
-            email: @email,
-            password: @password
-          })
-          .end (err, resp) =>
-            @err = err
-            @resp = resp
-            done()
+      @agent = request.agent()
+      gen.user(@password)
+        .then (email) =>
+          @agent
+            .put("#{process.env.API_PATH}/session")
+            .send({ email: email, password: @password })
+            .end (err, resp) =>
+              @err = err
+              @resp = resp
+              done()
 
     it "status 204",->
       expect(@resp["status"]).to.eq(204)
 
-    it "is application/json",->
-      expect(@resp["header"]["content-type"]).to.eq("application/json; charset=utf-8")
-
     it "sets the session cookie",->
-      expect(@resp["header"]["set-cookie"]).to.eq("")
+      expect(@resp["header"]["set-cookie"][0]).to.match(/^creds=.+;Expires=.+;HttpOnly$/)
 
-    xit "can be validated with /me", ->
-      # TODO
-
+    it "can be validated with /me", (done) ->
+      @agent
+        .get("#{process.env.API_PATH}/me")
+        .end (err, resp) =>
+          expect(resp["status"]).to.eq(200)
+          done()
 
 
