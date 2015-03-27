@@ -16,12 +16,12 @@ require('dotenv').load()
 console.log "API Path: #{process.env.API_PATH}"
 
 # /sign-up
-require('./specs/v0.1/sign-up/post')
-require('./specs/v0.1/sign-up/members/post')
+require('./specs/v0.1/sign-up/post-test')
+require('./specs/v0.1/sign-up/members/post-test')
 
 # /session
-require('./specs/v0.1/session/put')
-require('./specs/v0.1/session/delete')
+require('./specs/v0.1/session/put-test')
+require('./specs/v0.1/session/delete-test')
 
 # /me
-require('./specs/v0.1/me/get')
+require('./specs/v0.1/me/get-test')
