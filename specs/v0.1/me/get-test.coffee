@@ -1,7 +1,10 @@
 
-xdescribe "GET /me", ->
+getMe = require('./get')
+expect = require('chai').expect
 
-  context "with session", ->
+describe "GET /me", ->
+
+  xcontext "with session", ->
     before (done) ->
       # get user from generator
       # sign in as user
@@ -20,11 +23,7 @@ xdescribe "GET /me", ->
 
   context "without session", ->
     before (done) ->
-      request
-        .get("#{process.env.API_PATH}/me")
-        .end (err, resp) =>
-          @resp = resp
-          done()
+      getMe({}).then((resp) => @resp = resp).then(-> done())
 
     it "status 401",->
       expect(@resp["status"]).to.eq(401)
@@ -33,10 +32,10 @@ xdescribe "GET /me", ->
       expect(@resp["header"]["content-type"]).to.eq("application/json; charset=utf-8")
 
     it "has correct ['id']", ->
-      expect(@resp["body"]["id"]).to.eq("unauthorized")
+      expect(@resp["body"]["id"]).to.eq("missing-credentials")
 
     it "has correct ['url']", ->
-      expect(@resp["body"]["url"]).to.eq("http://www.hopper.com/admin/v0.1/#ca-unauthorized")
+      expect(@resp["body"]["url"]).to.eq("https://www.f7ops.com/docs/v0.1/#ce-missing-credentials")
 
     it "has correct ['message']", ->
       expect(@resp["body"]["message"]).to.match(/No credentials detected\./)
