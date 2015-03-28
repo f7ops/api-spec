@@ -40,7 +40,7 @@ describe "POST /sign-up/<token>", ->
       expect(@resp["body"]["id"]).to.eq("password-too-short")
 
     it "has correct ['url']", ->
-      expect(@resp["body"]["url"]).to.eq("http://www.hopper.com/admin/v0.1/#password-too-short")
+      expect(@resp["body"]["url"]).to.eq("https://www.f7ops.com/admin/v0.1/#password-too-short")
 
     it "has correct ['message']", ->
       expect(@resp["body"]["message"]).to.match(/Password is too short\. Min\. 4/)
@@ -92,7 +92,7 @@ describe "POST /sign-up/<token>", ->
       expect(@resp["body"]["id"]).to.eq("email-taken")
 
     it "has correct ['url']", ->
-      expect(@resp["body"]["url"]).to.eq("http://www.hopper.com/admin/v0.1/#email-taken")
+      expect(@resp["body"]["url"]).to.eq("https://www.f7ops.com/admin/v0.1/#email-taken")
 
     it "has correct ['message']", ->
       expect(@resp["body"]["message"]).to.match(/This email is already registered./)

@@ -25,7 +25,7 @@ describe "POST /sign-up", ->
         expect(@resp["header"]["content-type"]).to.eq("application/json; charset=utf-8")
 
       it "has default ['url']", ->
-        expect(@resp["body"]["url"]).to.match(/^http:\/\//)
+        expect(@resp["body"]["url"]).to.match(/^https:\/\//)
 
 
     context "with custom url", ->

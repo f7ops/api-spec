@@ -9,10 +9,8 @@ signIn = (attrs, agent = request) ->
       .send(attrs)
       .end (err, resp) ->
         if err?
-          console.log 'err'
           reject(err)
         else
-          console.log 'resp'
           resolve(resp)
   )
 

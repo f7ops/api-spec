@@ -63,7 +63,7 @@ describe "PUT /session", ->
       expect(@resp["body"]["id"]).to.eq("invalid-credentials")
 
     it "has correct ['url']", ->
-      expect(@resp["body"]["url"]).to.eq("http://www.hopper.com/docs/v0.1/#invalid-credentials")
+      expect(@resp["body"]["url"]).to.eq("https://www.f7ops.com/docs/v0.1/#invalid-credentials")
 
     it "has correct ['message']", ->
       expect(@resp["body"]["message"]).to.match(/No user with those credentials/)

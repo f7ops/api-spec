@@ -8,7 +8,7 @@ getTokenForEmail = (email) ->
   new Promise((resolve, reject) ->
     requestInvite({
       email: email
-      url: "http://herp.derp.co/&&{token}"
+      url: "https://herp.derp.co/&&{token}"
     })
     .then (resp) ->
       token = resp["body"]["url"].split('&&')[1]
