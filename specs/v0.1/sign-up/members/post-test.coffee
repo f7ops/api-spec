@@ -63,24 +63,36 @@ describe "POST /sign-up/<token>", ->
         .then(-> done())
         .catch(done)
 
+  context "with invalid token", ->
+    before (done) ->
+      register("invalid-tokoen", {email: gen.email(), password: "aoeu"})
+        .then((resp) => @resp = resp)
+        .then(=> done())
+        .catch((err) -> done(err))
 
-  # TODO - Need to test invalid token
+    it "status 400",->
+      expect(@resp["status"]).to.eq(400)
+
+    it "is application/json",->
+      expect(@resp["header"]["content-type"]).to.eq("application/json; charset=utf-8")
+
+    it "has correct ['id']", ->
+      expect(@resp["body"]["id"]).to.eq("invalid-token")
+
+    it "has correct ['url']", ->
+      expect(@resp["body"]["url"]).to.eq("https://www.f7ops.com/admin/v0.1/#invalid-token")
+
+    it "has correct ['message']", ->
+      expect(@resp["body"]["message"]).to.match(/Token is not valid for email address./)
+
   context "with email taken", ->
     before (done) ->
+      @password = "hiiiii"
       gen.user()
-        .then (email) =>
-          @password = "hiiiii"
-          request
-            .post("#{process.env.API_PATH}/sign-up")
-            .send({"email": email, "url": "http://herp.derp.co/&&{token}"})
-            .end (err, resp) =>
-              token = resp["body"]["url"].split('&&')[1]
-              request.post("#{process.env.API_PATH}/sign-up/#{token}")
-                .send({"email": email, "password": @password})
-                .end((err, resp) =>
-                  @resp = resp
-                  done()
-                )
+        .then((email) => register(null, {email: email, password: @password}))
+        .then((resp) => @resp = resp)
+        .then(=> done())
+        .catch((err) -> done(err))
 
     it "status 400",->
       expect(@resp["status"]).to.eq(400)
