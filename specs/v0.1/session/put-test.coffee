@@ -5,53 +5,32 @@ sharedErrors = require('../shared/errors')
 expect = require('chai').expect
 gen = require('../shared/generators')
 
-createUser = (email, password) ->
-  new Promise((resolve, reject) ->
-    request
-      .post("#{process.env.API_PATH}/sign-up")
-      .set("x-test-key", "i-am-testing")
-      .send({email: email})
-      .end (err, resp) ->
-        request
-          .post("#{process.env.API_PATH}/sign-up/#{resp.headers['x-test-token']}")
-          .send({email: email, password: password})
-          .end (err, resp) ->
-            if err? then reject() else resolve()
-  )
-
+signIn = require('./put')
 
 describe "PUT /session", ->
   context "with missing params", ->
     missingPasswordQ = (cb) ->
-      request
-        .put("#{process.env.API_PATH}/session")
-        .send({email: "x@example.com"})
-        .end (err, resp) ->
-          cb(err, resp)
+      signIn({email: gen.email()})
+        .then((resp)-> cb(null, resp))
+        .catch((err) -> cb(err, null))
 
     sharedErrors.missingParameters(missingPasswordQ, ["password"])
 
     missingEmailQ = (cb) ->
-      request
-        .put("#{process.env.API_PATH}/session")
-        .send({password: "some-password"})
-        .end (err, resp) ->
-          cb(err, resp)
+      signIn({password: "secret-password"})
+        .then((resp)-> cb(null, resp))
+        .catch((err) -> cb(err, null))
 
     sharedErrors.missingParameters(missingEmailQ, ["email"])
 
   context "with invalid credentials", ->
     before (done) ->
-      request
-        .put("#{process.env.API_PATH}/session")
-        .send({
-          email: "x@example.com",
-          password: "secret-password"
-        })
-        .end (err, resp) =>
-          @err = err
+      signIn({email: "some@example.com", password: "secr3t"})
+        .then((resp) =>
           @resp = resp
           done()
+        )
+        .catch(done)
 
     it "status 400",->
       expect(@resp["status"]).to.eq(400)
@@ -70,17 +49,15 @@ describe "PUT /session", ->
 
   context "with valid params", ->
     before (done) ->
-      @password = "secret-password"
+      password = "secret-password"
       @agent = request.agent()
-      gen.user(@password)
-        .then (email) =>
-          @agent
-            .put("#{process.env.API_PATH}/session")
-            .send({ email: email, password: @password })
-            .end (err, resp) =>
-              @err = err
-              @resp = resp
-              done()
+      gen.user(password)
+        .then((email) => signIn({email: email, password: password}, @agent))
+        .then((resp) =>
+          @resp = resp
+          done()
+        )
+        .catch(done)
 
     it "status 204",->
       expect(@resp["status"]).to.eq(204)
