@@ -25,7 +25,25 @@ user = (password) ->
           )
   )
 
+
+putSession = require('../session/put')
+signIn = (email, password, agent) ->
+  putSession({email: email, password: password}, agent)
+
+createAndSignInUser = (agent) ->
+  throw "Agent required" unless agent?
+  new Promise((resolve, reject) ->
+    pw = Math.random().toString()
+    user(pw)
+      .then (email) -> signIn(email, pw, agent)
+      .then -> resolve()
+      .catch (err) -> reject(err)
+  )
+
+
+
 module.exports = {
   email: email,
   user: user
+  createAndSignInUser: createAndSignInUser
 }

@@ -1,5 +1,4 @@
 
-Promise = require('es6-promise').Promise
 request = require('superagent')
 sharedErrors = require('../shared/errors')
 expect = require('chai').expect
