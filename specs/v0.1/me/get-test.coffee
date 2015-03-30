@@ -1,14 +1,21 @@
 
+createAndSignInUser = require('../shared/generators').createAndSignInUser
+
+request = require('superagent')
+
 getMe = require('./get')
 expect = require('chai').expect
 
 describe "GET /me", ->
 
-  xcontext "with session", ->
+  context "with session", ->
     before (done) ->
-      # get user from generator
-      # sign in as user
-      # get me and capture response
+      @agent = request.agent()
+      createAndSignInUser(@agent)
+        .then => getMe(@agent)
+        .then (resp) => @resp = resp
+        .then -> done()
+        .catch done
 
     it "status 200", ->
       expect(@resp["status"]).to.eq(200)
@@ -16,14 +23,27 @@ describe "GET /me", ->
     it "is application/json", ->
       expect(@resp["header"]["content-type"]).to.eq("application/json; charset=utf-8")
 
-    xit "has correct ['id']", ->
-    xit "has correct ['email']", ->
-    xit "has reasonable ['created_at']", ->
-    xit "has reasonable ['updated_at']", ->
+    it "has ['id']", ->
+      expect(@resp["body"]['id']).to.be.a('string')
+
+    it "has ['email']", ->
+      expect(@resp["body"]['email']).to.be.a('string')
+
+    it "has ['created_at']", ->
+      expect(@resp["body"]['created_at']).to.be.a('string')
+
+    it "has ['updated_at']", ->
+      expect(@resp["body"]['updated_at']).to.be.a('string')
+
+    it "does not have ['password']", ->
+      expect(@resp["body"]['password']).not.to.be.defined
 
   context "without session", ->
     before (done) ->
-      getMe({}).then((resp) => @resp = resp).then(-> done())
+      getMe(request.agent())
+        .then (resp) => @resp = resp
+        .then -> done()
+        .catch done
 
     it "status 401",->
       expect(@resp["status"]).to.eq(401)

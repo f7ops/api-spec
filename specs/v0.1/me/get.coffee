@@ -2,7 +2,8 @@
 Promise = require('es6-promise').Promise
 request = require('superagent')
 
-getMe = (attrs, agent = request) ->
+getMe = (agent) ->
+  throw "Agent required" unless agent?
   new Promise((resolve, reject) ->
     agent
       .get("#{process.env.API_PATH}/me")
