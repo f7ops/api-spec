@@ -7,7 +7,7 @@ signIn = require('./put')
 signOut = require('./delete')
 getMe = require('../me/get')
 
-describe "DELETE /session", ->
+describe.only "DELETE /session", ->
 
   context "with existing session", ->
 
@@ -23,7 +23,10 @@ describe "DELETE /session", ->
       expect(@resp["status"]).to.eq(204)
 
     it "removes the cookie",->
-      expect(@resp["header"]["set-cookie"][0]).to.match(/^creds=;.*Expires=.+;HttpOnly$/)
+      expect(@resp["header"]["set-cookie"][0]).to.match(/^creds=;.*Expires=(.+);HttpOnly$/)
+      # Assert expiration is in the past
+      expires = /^creds=;.*Expires=([^;]+);.*HttpOnly$/.exec(@resp["header"]["set-cookie"][0])[1]
+      expect(new Date(expires)).to.be.lt(new Date())
 
     context "when checking /me", ->
       it "errors", (done) ->
