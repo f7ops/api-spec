@@ -7,7 +7,7 @@ signIn = require('./put')
 signOut = require('./delete')
 getMe = require('../me/get')
 
-describe.only "DELETE /session", ->
+describe "DELETE /session", ->
 
   context "with existing session", ->
 
