@@ -1,11 +1,7 @@
-
-uuid = require('node-uuid')
 Promise = require('es6-promise').Promise
 request = require('superagent')
 
-email = () ->
-  "#{uuid.v4()}@example.com"
-
+email = require('./email')
 
 # Create a new user with password (default: random)
 # Returns a promise which resolves to the new user's email
@@ -25,25 +21,4 @@ user = (password) ->
           )
   )
 
-
-putSession = require('../session/put')
-signIn = (email, password, agent) ->
-  putSession({email: email, password: password}, agent)
-
-createAndSignInUser = (agent) ->
-  throw "Agent required" unless agent?
-  new Promise((resolve, reject) ->
-    pw = Math.random().toString()
-    user(pw)
-      .then (email) -> signIn(email, pw, agent)
-      .then -> resolve()
-      .catch (err) -> reject(err)
-  )
-
-
-
-module.exports = {
-  email: email,
-  user: user
-  createAndSignInUser: createAndSignInUser
-}
+module.exports = user

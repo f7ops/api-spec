@@ -1,5 +1,5 @@
 
-createAndSignInUser = require('../shared/generators').createAndSignInUser
+genAgentWithNewUserSession = require('../shared/generators/agent-with-new-user-session-async')
 
 request = require('superagent')
 
@@ -10,8 +10,8 @@ describe "GET /me", ->
 
   context "with session", ->
     before (done) ->
-      @agent = request.agent()
-      createAndSignInUser(@agent)
+      genAgentWithNewUserSession()
+        .then (agent) => @agent = agent
         .then => getMe(@agent)
         .then (resp) => @resp = resp
         .then -> done()

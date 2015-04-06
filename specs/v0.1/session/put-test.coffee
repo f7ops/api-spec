@@ -1,26 +1,26 @@
 
 request = require('superagent')
-sharedErrors = require('../shared/errors')
+
+isMissingParams = require('../shared/errors/is-missing-params')
+
 expect = require('chai').expect
-gen = require('../shared/generators')
+
+genEmail = require('../shared/generators/email')
+genUser  = require('../shared/generators/user-async')
 
 signIn = require('./put')
 
 describe "PUT /session", ->
   context "with missing params", ->
-    missingPasswordQ = (cb) ->
-      signIn({email: gen.email()})
-        .then((resp)-> cb(null, resp))
-        .catch((err) -> cb(err, null))
+    missingPasswordQ = ->
+      signIn({email: genEmail()})
 
-    sharedErrors.missingParameters(missingPasswordQ, ["password"])
+    isMissingParams(missingPasswordQ, ["password"])
 
     missingEmailQ = (cb) ->
       signIn({password: "secret-password"})
-        .then((resp)-> cb(null, resp))
-        .catch((err) -> cb(err, null))
 
-    sharedErrors.missingParameters(missingEmailQ, ["email"])
+    isMissingParams(missingEmailQ, ["email"])
 
   context "with invalid credentials", ->
     before (done) ->
@@ -50,7 +50,7 @@ describe "PUT /session", ->
     before (done) ->
       password = "secret-password"
       @agent = request.agent()
-      gen.user(password)
+      genUser(password)
         .then((email) => signIn({email: email, password: password}, @agent))
         .then((resp) =>
           @resp = resp

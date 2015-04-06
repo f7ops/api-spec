@@ -1,22 +1,25 @@
 
-gen           = require("../shared/generators")
+genEmail      = require('../shared/generators/email')
+
+isMissingParams = require('../shared/errors/is-missing-params')
+
 expect        = require('chai').expect
 requestInvite = require('./post')
-sharedErrors  = require('../shared/errors')
 
 describe "POST /sign-up", ->
   context "with missing params", ->
-    missingEmailQ = (cb) ->
-      requestInvite({}).then (resp) => cb(null, resp)
+    missingEmailQ = ->
+      requestInvite({})
 
-    sharedErrors.missingParameters(missingEmailQ, ["email"])
+    isMissingParams(missingEmailQ, ["email"])
 
   context "with valid params", ->
     context "without custom url", ->
       before (done) ->
-        requestInvite({ "email": gen.email() })
+        requestInvite({ "email": genEmail() })
           .then (resp) => @resp = resp
           .then -> done()
+          .catch done
 
       it "status 200",->
         expect(@resp["status"]).to.eq(200)
@@ -31,9 +34,10 @@ describe "POST /sign-up", ->
     context "with custom url", ->
       before (done) ->
         @url = "http://herp.co/derp{token}={email}"
-        requestInvite({ "email": gen.email(), url: @url })
+        requestInvite({ "email": genEmail(), url: @url })
           .then (resp) => @resp = resp
           .then -> done()
+          .catch done
 
       it "status 200",->
         expect(@resp["status"]).to.eq(200)

@@ -1,7 +1,8 @@
 
-gen     = require('../../shared/generators')
-Promise = require('es6-promise').Promise
-request = require('superagent')
+genEmail  = require('../../shared/generators/email')
+
+Promise   = require('es6-promise').Promise
+request   = require('superagent')
 requestInvite = require('../post')
 
 getTokenForEmail = (email) ->
@@ -18,7 +19,7 @@ getTokenForEmail = (email) ->
 # If no token is passed, the function will attempt to
 # get one from the sign-up route.
 register = (token, attrs, agent = request) ->
-  email = attrs.email || gen.email()
+  email = attrs.email || genEmail()
 
   new Promise((resolve, reject) ->
     if token?

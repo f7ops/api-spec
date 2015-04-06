@@ -2,7 +2,8 @@
 request = require('superagent')
 expect = require('chai').expect
 
-createAndSignInUser = require('../shared/generators').createAndSignInUser
+createAgentForNewUser = require('../shared/generators/agent-with-new-user-session-async')
+
 signIn = require('./put')
 signOut = require('./delete')
 getMe = require('../me/get')
@@ -12,12 +13,13 @@ describe "DELETE /session", ->
   context "with existing session", ->
 
     before (done) ->
-      @agent = request.agent()
-      createAndSignInUser(@agent)
-        .then => signOut(@agent)
+      createAgentForNewUser()
+        .then (agent) =>
+          @agent = agent
+          signOut(@agent)
         .then (resp) => @resp = resp
         .then -> done()
-        .catch (err) -> done(err)
+        .catch(done)
 
     it "status 204",->
       expect(@resp["status"]).to.eq(204)

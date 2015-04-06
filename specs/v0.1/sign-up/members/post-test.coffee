@@ -1,31 +1,29 @@
 request = require('superagent')
-sharedErrors = require('../../shared/errors')
-expect = require('chai').expect
-gen = require('../../shared/generators')
+expect  = require('chai').expect
 
+isMissingParams = require('../../shared/errors/is-missing-params')
+
+genEmail = require('../../shared/generators/email')
+genUser  = require('../../shared/generators/user-async')
 
 register = require('./post')
 signIn   = require('../../session/put')
 
 describe "POST /sign-up/<token>", ->
   context "with missing params", ->
-    missingEmailQ = (cb) ->
+    missingEmailQ = ->
       register(null, {password: "secret-password"})
-        .then((resp)-> cb(null, resp))
-        .catch((err) -> cb(err, null))
 
-    sharedErrors.missingParameters(missingEmailQ, ["email"])
+    isMissingParams(missingEmailQ, ["email"])
 
-    missingPasswordQ = (cb) ->
-      register(null, {email: gen.email()})
-        .then((resp)-> cb(null, resp))
-        .catch((err) -> cb(err, null))
+    missingPasswordQ = ->
+      register(null, {email: genEmail()})
 
-    sharedErrors.missingParameters(missingPasswordQ, ["password"])
+    isMissingParams(missingPasswordQ, ["password"])
 
   context "with password too short", ->
     before (done) ->
-      register(null, {email: gen.email(), password: "hi"})
+      register(null, {email: genEmail(), password: "hi"})
         .then((resp) => @resp = resp)
         .then(-> done())
         .catch(done)
@@ -47,7 +45,7 @@ describe "POST /sign-up/<token>", ->
 
   context "with valid params", ->
     before (done) ->
-      @email = gen.email()
+      @email = genEmail()
       @password = "hiiiii"
       register(null, {email: @email, password: @password})
         .then((resp) => console.log(resp["status"]);  @resp = resp)
@@ -65,7 +63,7 @@ describe "POST /sign-up/<token>", ->
 
   context "with invalid token", ->
     before (done) ->
-      register("invalid-tokoen", {email: gen.email(), password: "aoeu"})
+      register("invalid-tokoen", {email: genEmail(), password: "aoeu"})
         .then((resp) => @resp = resp)
         .then(=> done())
         .catch((err) -> done(err))
@@ -88,7 +86,7 @@ describe "POST /sign-up/<token>", ->
   context "with email taken", ->
     before (done) ->
       @password = "hiiiii"
-      gen.user()
+      genUser()
         .then((email) => register(null, {email: email, password: @password}))
         .then((resp) => @resp = resp)
         .then(=> done())
