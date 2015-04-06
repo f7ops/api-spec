@@ -31,3 +31,50 @@ exports.missingParameters = (query, expectedParams = []) ->
       expect(@resp["body"]["message"]).to.match(/Missing one or more required parameters./)
 
 
+exports.isUnauthenticated = (resp) ->
+    before (done) ->
+      query((err, resp) =>
+        @err = err
+        @resp = resp
+        done()
+      )
+
+    it "status 422",->
+      expect(@resp["status"]).to.eq(422)
+
+    it "is application/json",->
+      expect(@resp["header"]["content-type"]).to.eq("application/json; charset=utf-8")
+
+    it "has correct ['id']", ->
+      expect(@resp["body"]["id"]).to.eq("unauthenticated")
+
+    it "has correct ['url']", ->
+      expect(@resp["body"]["url"]).to.eq("http://www.f7ops.com/docs/v0.1/#ce-unauthenticated")
+
+    it "has correct ['message']", ->
+      expect(@resp["body"]["message"]).to.match(/Unauthenticated/)
+
+exports.isUnauthorized = (query) ->
+
+    before (done) ->
+      query((err, resp) =>
+        @err = err
+        @resp = resp
+        done()
+      )
+
+    it "status 422",->
+      expect(@resp["status"]).to.eq(422)
+
+    it "is application/json",->
+      expect(@resp["header"]["content-type"]).to.eq("application/json; charset=utf-8")
+
+    it "has correct ['id']", ->
+      expect(@resp["body"]["id"]).to.eq("unauthenticated")
+
+    it "has correct ['url']", ->
+      expect(@resp["body"]["url"]).to.eq("http://www.f7ops.com/docs/v0.1/#ce-unauthenticated")
+
+    it "has correct ['message']", ->
+      expect(@resp["body"]["message"]).to.match(/Unauthenticated/)
+

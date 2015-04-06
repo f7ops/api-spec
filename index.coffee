@@ -25,3 +25,14 @@ require('./specs/v0.1/session/delete-test')
 
 # /me
 require('./specs/v0.1/me/get-test')
+
+# /projects
+require('./specs/v0.1/projects/get-test')
+require('./specs/v0.1/projects/post-test')
+
+require('./specs/v0.1/projects/members/get-test')
+require('./specs/v0.1/projects/members/put-test')
+require('./specs/v0.1/projects/members/delete-test')
+
+require('./specs/v0.1/projects/members/content/get-test')
+require('./specs/v0.1/projects/members/content/put-test')
