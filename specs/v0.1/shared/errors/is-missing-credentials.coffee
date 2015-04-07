@@ -1,7 +1,7 @@
 expect = require('chai').expect
 
-module.export = (query) ->
-  describe "is an 'unathenticated' error", ->
+module.exports = (query) ->
+  describe "is a 'credentials-required' error", ->
 
     before (done) ->
       query()
@@ -9,17 +9,18 @@ module.export = (query) ->
         .then -> done()
         .catch done
 
-    it "status 422",->
+    it "status 401", ->
       expect(@resp["status"]).to.eq(401)
 
     it "is application/json",->
       expect(@resp["header"]["content-type"]).to.eq("application/json; charset=utf-8")
 
     it "has correct ['id']", ->
-      expect(@resp["body"]["id"]).to.eq("unauthenticated")
+      expect(@resp["body"]["id"]).to.eq("credentials-required")
 
     it "has correct ['url']", ->
-      expect(@resp["body"]["url"]).to.eq("http://www.f7ops.com/docs/v0.1/#ce-unauthenticated")
+      expect(@resp["body"]["url"]).to.eq("https://www.f7ops.com/docs/v0.1/#ce-credentials-required")
 
     it "has correct ['message']", ->
-      expect(@resp["body"]["message"]).to.match(/Unauthenticated/)
+      expect(@resp["body"]["message"]).to.match(/No credentials detected. Hows about an API token or valid session cookie/)
+

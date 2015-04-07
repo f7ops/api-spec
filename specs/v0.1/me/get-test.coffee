@@ -1,5 +1,6 @@
 
 genAgentWithNewUserSession = require('../shared/generators/agent-with-new-user-session-async')
+isMissingCredentials = require('../shared/errors/is-missing-credentials')
 
 request = require('superagent')
 
@@ -8,7 +9,13 @@ expect = require('chai').expect
 
 describe "GET /me", ->
 
-  context "with session", ->
+  context "as anonymouts", ->
+    query = ->
+      getMe(request.agent())
+
+    isMissingCredentials(query)
+
+  context "as user", ->
     before (done) ->
       genAgentWithNewUserSession()
         .then (agent) => @agent = agent
@@ -37,26 +44,4 @@ describe "GET /me", ->
 
     it "does not have ['password']", ->
       expect(@resp["body"]['password']).not.to.be.defined
-
-  context "without session", ->
-    before (done) ->
-      getMe(request.agent())
-        .then (resp) => @resp = resp
-        .then -> done()
-        .catch done
-
-    it "status 401",->
-      expect(@resp["status"]).to.eq(401)
-
-    it "is application/json", ->
-      expect(@resp["header"]["content-type"]).to.eq("application/json; charset=utf-8")
-
-    it "has correct ['id']", ->
-      expect(@resp["body"]["id"]).to.eq("missing-credentials")
-
-    it "has correct ['url']", ->
-      expect(@resp["body"]["url"]).to.eq("https://www.f7ops.com/docs/v0.1/#ce-missing-credentials")
-
-    it "has correct ['message']", ->
-      expect(@resp["body"]["message"]).to.match(/No credentials detected\./)
 

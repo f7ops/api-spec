@@ -1,6 +1,4 @@
-
 Promise = require('es6-promise').Promise
-request = require('superagent')
 
 getProjects = (agent) ->
   throw "Agent required" unless agent?

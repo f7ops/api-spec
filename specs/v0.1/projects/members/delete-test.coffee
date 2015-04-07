@@ -1,9 +1,18 @@
 
+request = require('superagent')
+
+isMissingCredentials = require('../../shared/errors/is-missing-credentials')
+
+deleteProject = require('./delete')
+
 describe "DELETE /projects/{id}", ->
 
   context "as anonymous", ->
 
-    xit "401s", ->
+    query = ->
+      deleteProject("some-id", request.agent())
+
+    isMissingCredentials(query)
 
   context "as non-owning user", ->
 

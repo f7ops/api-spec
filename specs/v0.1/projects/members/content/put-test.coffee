@@ -1,9 +1,16 @@
 
+request = require('superagent')
+
+isMissingCredentials = require('../../../shared/errors/is-missing-credentials')
+updateProjectContent = require('./put')
+
 describe "PUT /projects/{id}/content", ->
 
   context "as anonymous", ->
+    query = ->
+      updateProjectContent("some-id", "some content", request.agent())
 
-    xit "401s", ->
+    isMissingCredentials(query)
 
   context "as non-owning user", ->
 

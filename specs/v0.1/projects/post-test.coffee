@@ -1,9 +1,18 @@
 
+request = require('superagent')
+
+isMissingCredentials = require('../shared/errors/is-missing-credentials')
+createProject = require('./post')
+
+
 describe "POST /projects", ->
 
-  context "when unauthenticated", ->
+  context "as anonymous", ->
+    query = ->
+      createProject({}, request.agent())
 
-    xit "returns an unauthentiacted error"
+    isMissingCredentials(query)
+
 
   context "user logged in", ->
 

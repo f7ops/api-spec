@@ -1,8 +1,15 @@
+request = require('superagent')
+
+isMissingCredentials = require('../shared/errors/is-missing-credentials')
+getProjects = require('./get')
 
 describe "GET /projects", ->
 
   context "as anonymous", ->
-    xit "401s", ->
+    query = ->
+      getProjects(request.agent())
+
+    isMissingCredentials(query)
 
   context "as user", ->
     xit "returns a list of projects"

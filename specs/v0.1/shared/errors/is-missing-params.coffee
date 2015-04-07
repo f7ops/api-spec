@@ -19,7 +19,7 @@ module.exports = (query, expectedParams = []) ->
       expect(@resp["body"]["id"]).to.eq("missing-params")
 
     it "has correct ['url']", ->
-      expect(@resp["body"]["url"]).to.eq("http://www.f7ops.com/docs/v0.1/#ce-missing-params")
+      expect(@resp["body"]["url"]).to.eq("https://www.f7ops.com/docs/v0.1/#ce-missing-params")
 
     it "has correct ['params']", ->
       expect(@resp["body"]["params"]).to.eql(expectedParams)
