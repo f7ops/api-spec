@@ -1,8 +1,17 @@
 
+uuid = require('node-uuid').v4
 request = require('superagent')
+
+expect = require('chai').expect
 
 isMissingCredentials = require('../../shared/errors/is-missing-credentials')
 updateProject = require('./put')
+createProject = require('../post')
+
+Promise = require('es6-promise').Promise
+
+isValidProject = require('../is-valid-project')
+genAgentWithNewUserSession = require('../../shared/generators/agent-with-new-user-session-async')
 
 describe "PUT /projects/{id}", ->
 
@@ -13,16 +22,90 @@ describe "PUT /projects/{id}", ->
     isMissingCredentials(query)
 
   context "project does not exist", ->
+    before (done) ->
+      genAgentWithNewUserSession()
+        .then (agent) => @agent = agent
+        .then => updateProject(uuid(), {}, @agent)
+        .then (resp) => @resp = resp
+        .then -> done()
+        .catch done
 
-    xit "404s"
+    it "404s", ->
+      expect(@resp["status"]).to.eq(404)
 
   context "as non-owning user", ->
+    before (done) ->
+      genMe = genAgentWithNewUserSession()
+        .then (agent) => @agent = agent
 
-    xit "403s"
+      genOtherProject = genAgentWithNewUserSession()
+        .then (agent) => @other = agent
+        .then => createProject({}, @other)
+        .then (resp) => @project = resp["body"]
+
+      Promise.all([genMe, genOtherProject])
+        .then -> done()
+        .catch done
+
+    it "403s", (done) ->
+      updateProject(@project["id"], {priority: 4}, @agent)
+        .then (resp) ->
+          expect(resp["status"]).to.eq(403)
+        .then -> done()
+        .catch done
 
   context "as owning user", ->
+    before (done) ->
+      genAgentWithNewUserSession()
+        .then (agent) => @agent = agent
+        .then => createProject({}, @agent)
+        .then (resp) => @project = resp["body"]
+        .then -> done()
+        .catch done
 
-    xit "allows the change of priority", ->
-    xit "returns the updated entity"
-    xit "disallows the change of content", ->
+    it "allows the change of priority", (done) ->
+      priority = Math.round(Math.random() * 100)
+      updateProject(@project["id"], {priority: priority}, @agent)
+        .then (resp) =>
+          # Expect changed priority
+          expect(resp["body"]["priority"]).to.eq(priority)
+
+          # Expect updated timestamp
+          oldUpdated = (new Date(@project["updated_at"])).valueOf()
+          newUpdated = (new Date(resp["body"]["updated_at"])).valueOf()
+          expect(oldUpdated).to.be.lt(newUpdated)
+
+        .then -> done()
+        .catch done
+
+
+    it "allows the change of content", (done) ->
+      content = [{
+        "type": "project",
+        "description": "Hiiiii",
+        "contents": [],
+        "name": "Hellooooo"
+      }]
+      updateProject(@project["id"], {content: content}, @agent)
+        .then (resp) =>
+          # Expect changed content
+          expect(resp["body"]["content"]).to.deep.eq(content)
+
+          # Expect updated timestamp
+          oldUpdated = (new Date(@project["updated_at"])).valueOf()
+          newUpdated = (new Date(resp["body"]["updated_at"])).valueOf()
+          expect(oldUpdated).to.be.lt(newUpdated)
+
+        .then -> done()
+        .catch done
+
+    it "returns the updated entity", (done) ->
+      content = []
+      updateProject(@project["id"], {content: content}, @agent)
+        .then (resp) =>
+          isValidProject(resp["body"])
+        .then -> done()
+        .catch done
+
+
 

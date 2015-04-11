@@ -10,7 +10,7 @@ createProject = require('../post')
 isMissingCredentials = require('../../shared/errors/is-missing-credentials')
 genAgentWithNewUserSession = require('../../shared/generators/agent-with-new-user-session-async')
 
-describe.only "GET /projects/{id}", ->
+describe "GET /projects/{id}", ->
 
   context "as anonymous", ->
 
