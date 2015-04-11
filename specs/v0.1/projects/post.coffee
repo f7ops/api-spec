@@ -7,7 +7,7 @@ createProject = (attrs, agent) ->
     agent
       .post("#{process.env.API_PATH}/projects")
       .send(attrs)
-      .end (err, resp) =>
+      .end (err, resp) ->
         if err?
           reject(err)
         else

@@ -7,7 +7,7 @@ getMe = (agent) ->
   new Promise((resolve, reject) ->
     agent
       .get("#{process.env.API_PATH}/me")
-      .end (err, resp) =>
+      .end (err, resp) ->
         if err?
           reject(err)
         else

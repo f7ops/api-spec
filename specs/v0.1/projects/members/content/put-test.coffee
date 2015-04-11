@@ -12,6 +12,9 @@ describe "PUT /projects/{id}/content", ->
 
     isMissingCredentials(query)
 
+  context "project does not exist", ->
+    xit "404s"
+
   context "as non-owning user", ->
 
     xit "403s"
@@ -30,4 +33,5 @@ describe "PUT /projects/{id}/content", ->
       xit "updates the modified date of the resource"
       xit "returns success 204"
 
-
+    context "with other", ->
+      xit "422s"

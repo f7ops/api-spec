@@ -11,6 +11,9 @@ describe "GET /projects/{id}/content", ->
 
     isMissingCredentials(query)
 
+  context "project does not exist", ->
+    xit "404s"
+
   context "as non-owning user", ->
     xit "403s"
 

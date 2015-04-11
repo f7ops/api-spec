@@ -14,6 +14,9 @@ describe "GET /projects/{id}", ->
 
     isMissingCredentials(query)
 
+  context "project does not exist", ->
+    xit "404s"
+
   context "as non-owning user", ->
 
     xit "403s"
@@ -27,3 +30,4 @@ describe "GET /projects/{id}", ->
     xit "with ['priority']"
     xit "with ['created_at']"
     xit "with ['updated_at']"
+
