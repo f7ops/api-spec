@@ -50,7 +50,6 @@ describe "POST /projects", ->
         it "has ['user_id']", (done) ->
           getMe(@agent)
             .then (me) =>
-              console.log me
               expect(me["body"]["id"]).to.eq(@resp["body"]["user_id"])
             .then -> done()
             .catch done

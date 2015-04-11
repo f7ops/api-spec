@@ -13,6 +13,7 @@
     "coffee-script": "^1.9.1",
     "dotenv": "^0.5.1",
     "es6-promise": "^2.0.1",
+    "lodash": "^3.6.0",
     "mocha": "^2.1.0",
     "node-uuid": "^1.4.3",
     "superagent": "^0.21.0"

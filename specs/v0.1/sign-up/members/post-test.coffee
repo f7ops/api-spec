@@ -48,9 +48,9 @@ describe "POST /sign-up/<token>", ->
       @email = genEmail()
       @password = "hiiiii"
       register(null, {email: @email, password: @password})
-        .then((resp) => console.log(resp["status"]);  @resp = resp)
-        .then(-> done())
-        .catch(done)
+        .then (resp) => @resp = resp
+        .then -> done()
+        .catch done
 
     it "status 204",->
       expect(@resp["status"]).to.eq(204)
