@@ -13,6 +13,8 @@ Promise = require('es6-promise').Promise
 isValidProject = require('../is-valid-project')
 genAgentWithNewUserSession = require('../../shared/generators/agent-with-new-user-session-async')
 
+# TODO - investigate content updating issue with malformed json
+#   should not return 200 if incorrect
 describe "PUT /projects/{id}", ->
 
   context "as anonymous", ->
