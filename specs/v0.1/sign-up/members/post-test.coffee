@@ -63,7 +63,7 @@ describe "POST /sign-up/<token>", ->
 
   context "with invalid token", ->
     before (done) ->
-      register("invalid-tokoen", {email: genEmail(), password: "aoeu"})
+      register("invalid-token", {email: genEmail(), password: "aoeu"})
         .then((resp) => @resp = resp)
         .then(=> done())
         .catch((err) -> done(err))
