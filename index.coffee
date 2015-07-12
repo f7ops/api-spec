@@ -37,8 +37,8 @@ require('./specs/v0.1/projects/members/delete-test')
 require('./specs/v0.1/projects/members/content/get-test')
 require('./specs/v0.1/projects/members/content/put-test')
 
-# /tokens
+# /api-keys
 
-require('./specs/v0.1/tokens/post-test')
-require('./specs/v0.1/tokens/get-test')
-require('./specs/v0.1/tokens/members/delete-test')
+require('./specs/v0.1/api-keys/post-test')
+require('./specs/v0.1/api-keys/get-test')
+require('./specs/v0.1/api-keys/members/delete-test')

@@ -22,5 +22,5 @@ module.exports = (query) ->
       expect(@resp["body"]["url"]).to.eq("https://www.f7ops.com/docs/v0.1/#ce-credentials-required")
 
     it "has correct ['message']", ->
-      expect(@resp["body"]["message"]).to.match(/No credentials detected. Hows about an API token or valid session cookie/)
+      expect(@resp["body"]["message"]).to.match(/No credentials detected. Hows about an API key or valid session cookie/)
 

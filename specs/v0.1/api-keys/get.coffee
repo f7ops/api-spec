@@ -1,18 +1,17 @@
 Promise = require('es6-promise').Promise
 
-createToken = (attrs, agent) ->
+getApiKeys = (agent) ->
   throw "Agent required" unless agent?
   new Promise((resolve, reject) ->
     agent
-      .post("#{process.env.API_PATH}/tokens")
-      .send(attrs)
-      .end (err, resp) ->
+      .get("#{process.env.API_PATH}/api-keys")
+      .end (err, resp) =>
         if err?
           reject(err)
         else
           resolve(resp)
   )
 
-module.exports = createToken
+module.exports = getApiKeys
 
 

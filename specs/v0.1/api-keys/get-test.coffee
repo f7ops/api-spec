@@ -5,14 +5,14 @@ expect = require('chai').expect
 isMissingCredentials = require('../shared/errors/is-missing-credentials')
 genAgentWithNewUserSession = require('../shared/generators/agent-with-new-user-session-async')
 
-createToken = require('./post')
-getTokens = require('./get')
+createKey = require('./post')
+getKeys = require('./get')
 
-describe "GET /tokens", ->
+describe "GET /api-keys", ->
 
   context "as anonymous", ->
     query = ->
-      getTokens(request.agent())
+      getKeys(request.agent())
 
     isMissingCredentials(query)
 
@@ -21,10 +21,10 @@ describe "GET /tokens", ->
       @timeout(100000)
       genAgentWithNewUserSession()
         .then (agent) => @agent = agent
-        .then => createToken({}, @agent)
-        .then => createToken({}, @agent)
-        .then => createToken({}, @agent)
-        .then => getTokens(@agent)
+        .then => createKey({}, @agent)
+        .then => createKey({}, @agent)
+        .then => createKey({}, @agent)
+        .then => getKeys(@agent)
         .then (resp) => @resp = resp
         .then -> done()
         .catch done
@@ -43,24 +43,24 @@ describe "GET /tokens", ->
         @each = _.partial(_.each, @resp["body"])
 
       it "does not have ['hash']", ->
-        @each (token) -> expect(token["hash"]).to.be.undefined
+        @each (key) -> expect(key["hash"]).to.be.undefined
 
       it "has ['id']", ->
-        @each (token) -> expect(token["id"]).to.be.a('string')
+        @each (key) -> expect(key["id"]).to.be.a('string')
 
       it "has ['label']", ->
-        @each (token) -> expect(token["label"]).to.be.a('string')
+        @each (key) -> expect(key["label"]).to.be.a('string')
 
       it "has ['created_at']", ->
-        @each (token) -> expect(token["created_at"]).to.be.a('string')
+        @each (key) -> expect(key["created_at"]).to.be.a('string')
 
-    it "includes user's tokens", ->
+    it "includes user's keys", ->
       expect(@resp['body']).to.have.length(3)
 
-    it "does not include other user's tokens", (done) ->
+    it "does not include other user's keys", (done) ->
       genAgentWithNewUserSession() # create other user
-        .then (agent) => createToken({}, agent) # for other user
-        .then => getTokens(@agent)
+        .then (agent) => createKey({}, agent) # for other user
+        .then => getKeys(@agent)
         .then (resp) => expect(resp['body']).to.have.length(3) # should still have 3
         .then -> done()
         .catch done

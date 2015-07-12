@@ -4,14 +4,14 @@ expect = require('chai').expect
 
 isMissingCredentials = require('../../shared/errors/is-missing-credentials')
 genAgentWithNewUserSession = require('../../shared/generators/agent-with-new-user-session-async')
-createToken = require('../post')
+createKey = require('../post')
 
-deleteToken = require('./delete')
+deleteKey = require('./delete')
 
-describe "DELETE /tokens/:id", ->
+describe.only "DELETE /api-keys/:id", ->
   context "as anonymous", ->
     query = ->
-      deleteToken("some-token", request.agent())
+      deleteKey("some-key", request.agent())
 
     isMissingCredentials(query)
 
@@ -20,14 +20,14 @@ describe "DELETE /tokens/:id", ->
       @timeout(50000)
       genAgentWithNewUserSession()
         .then (agent) => @agent = agent
-        .then => createToken({"label": ""}, @agent)
-        .then (resp) => @token = resp["body"]
+        .then => createKey({"label": ""}, @agent)
+        .then (resp) => @key = resp["body"]
         .then -> done()
         .catch done
 
     context ":id does not exist", ->
       before (done) ->
-        deleteToken("some-nonexistent-id", @agent)
+        deleteKey("0860dd0c-28b2-11e5-b933-6c3be57bb446", @agent)
           .then (resp) => @resp = resp
           .then -> done()
           .catch done
@@ -37,7 +37,7 @@ describe "DELETE /tokens/:id", ->
 
     context ":id belongs to user", ->
       before (done) ->
-        deleteToken(@token["id"], @agent)
+        deleteKey(@key["id"], @agent)
           .then (resp) => @resp = resp
           .then -> done()
           .catch done
@@ -47,7 +47,8 @@ describe "DELETE /tokens/:id", ->
 
       it "disables that key", (done) ->
         request
-          .get("#{process.env.API_PATH}/me?token=#{@token["token"]}")
+          .get("#{process.env.API_PATH}/me")
+          .set("x-api-key", @key["key"])
           .end (err, resp) ->
             expect(resp["status"]).to.eq(401)
             done(err)
@@ -55,9 +56,10 @@ describe "DELETE /tokens/:id", ->
     context ":id belongs to other", ->
       before (done) ->
         genAgentWithNewUserSession()
-          .then (otherAgent) => createToken({}, otherAgent)
-          .then (otherTokenResp) =>
-            deleteToken(otherTokenResp["body"]["id"], @agent)
+          .then (otherAgent) => createKey({}, otherAgent)
+          .then (otherKeyResp) =>
+            @otherKey = otherKeyResp["body"]["key"]
+            deleteKey(otherKeyResp["body"]["id"], @agent)
           .then (resp) => @resp = resp
           .then -> done()
           .catch done
@@ -67,7 +69,7 @@ describe "DELETE /tokens/:id", ->
 
       it "does not delete other user's key", (done) ->
         request
-          .get("#{process.env.API_PATH}/me?key=#{@token["token"]}")
+          .get("#{process.env.API_PATH}/me?key=#{@otherKey}")
           .end (err, resp) ->
             expect(resp["status"]).to.eq(200)
             done(err)
