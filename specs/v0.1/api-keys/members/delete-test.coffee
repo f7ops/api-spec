@@ -8,7 +8,7 @@ createKey = require('../post')
 
 deleteKey = require('./delete')
 
-describe.only "DELETE /api-keys/:id", ->
+describe "DELETE /api-keys/:id", ->
   context "as anonymous", ->
     query = ->
       deleteKey("some-key", request.agent())
