@@ -1,10 +1,10 @@
 Promise = require('es6-promise').Promise
 
-deleteToken = (id, agent) ->
+deleteApiKey = (id, agent) ->
   throw "Agent required" unless agent?
   new Promise((resolve, reject) ->
     agent
-      .del("#{process.env.API_PATH}/tokens/#{id}")
+      .del("#{process.env.API_PATH}/api-keys/#{id}")
       .end (err, resp) =>
         if err?
           reject(err)
@@ -12,5 +12,5 @@ deleteToken = (id, agent) ->
           resolve(resp)
   )
 
-module.exports = deleteToken
+module.exports = deleteApiKey
 

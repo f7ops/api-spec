@@ -17,6 +17,7 @@ user = (password) ->
         request.post("#{process.env.API_PATH}/sign-up/#{token}")
           .send({"email": addr, "password": pw})
           .end((err, resp) ->
+            if err? then return reject(err)
             resolve(addr)
           )
   )

@@ -4,14 +4,14 @@ expect = require('chai').expect
 isMissingCredentials = require('../shared/errors/is-missing-credentials')
 genAgentWithNewUserSession = require('../shared/generators/agent-with-new-user-session-async')
 
-createToken = require('./post')
+createKey = require('./post')
 getMe = require('../me/get')
 
-describe "POST /tokens", ->
+describe "POST /api-keys", ->
 
   context "as anonymous", ->
     query = ->
-      createToken({}, request.agent())
+      createKey({}, request.agent())
 
     isMissingCredentials(query)
 
@@ -20,7 +20,7 @@ describe "POST /tokens", ->
       @label = "This is a label"
       genAgentWithNewUserSession()
         .then (agent) => @agent = agent
-        .then => createToken({"label": @label}, @agent)
+        .then => createKey({"label": @label}, @agent)
         .then (resp) => @resp = resp
         .then => getMe(@agent)
         .then (resp) => @me = resp["body"]
@@ -42,14 +42,14 @@ describe "POST /tokens", ->
     it "has ['created_at']", ->
       expect(@resp["body"]['created_at']).to.be.a('string')
 
-    it "has ['token']", ->
-      expect(@resp["body"]['token']).to.be.a('string')
+    it "has ['key']", ->
+      expect(@resp["body"]['key']).to.be.a('string')
 
     describe "can 'GET /me'", ->
       it "via header", (done) ->
         request
           .get("#{process.env.API_PATH}/me")
-          .set("x-api-key", @resp["body"]["token"])
+          .set("x-api-key", @resp["body"]["key"])
           .end (err, resp) =>
             expect(resp["body"]).to.deep.eql(@me)
             done(err)
@@ -57,7 +57,7 @@ describe "POST /tokens", ->
 
       it "via url param", (done) ->
         request
-          .get("#{process.env.API_PATH}/me?key=#{@resp["body"]["token"]}")
+          .get("#{process.env.API_PATH}/me?key=#{@resp["body"]["key"]}")
           .end (err, resp) =>
             expect(resp["body"]).to.deep.eql(@me)
             done(err)
