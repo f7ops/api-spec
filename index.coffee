@@ -19,6 +19,10 @@ console.log "API Path: #{process.env.API_PATH}"
 require('./specs/v0.1/sign-up/post-test')
 require('./specs/v0.1/sign-up/members/post-test')
 
+# /password-reset
+require('./specs/v0.1/password-reset/post-test')
+require('./specs/v0.1/password-reset/members/post-test')
+
 # /session
 require('./specs/v0.1/session/put-test')
 require('./specs/v0.1/session/delete-test')
