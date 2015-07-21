@@ -37,6 +37,7 @@ describe "PUT /projects/{id}", ->
 
   context "as non-owning user", ->
     before (done) ->
+      @timeout(4000)
       genMe = genAgentWithNewUserSession()
         .then (agent) => @agent = agent
 
