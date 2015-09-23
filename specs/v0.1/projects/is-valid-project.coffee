@@ -9,6 +9,7 @@ isValidProject = (project) ->
   expect(project["priority"]).to.be.an('number')
   expect(project["created_at"]).to.be.a('string')
   expect(project["updated_at"]).to.be.a('string')
+  expect(project["name"]).to.be.a('string')
 
 module.exports = isValidProject
 

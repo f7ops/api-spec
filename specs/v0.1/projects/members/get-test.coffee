@@ -89,3 +89,6 @@ describe "GET /projects/{id}", ->
     it "with ['updated_at']", ->
       expect(@resp["body"]['updated_at']).to.be.a('string')
 
+    it "with ['name']", ->
+      expect(@resp["body"]['name']).to.be.a('string')
+

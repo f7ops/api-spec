@@ -81,6 +81,20 @@ describe "PUT /projects/{id}", ->
         .then -> done()
         .catch done
 
+    it "allows the change of name", (done) ->
+      name = "name1"
+      updateProject(@project["id"], {name: name}, @agent)
+        .then (resp) =>
+          # Expect changed priority
+          expect(resp["body"]["name"]).to.eq(name)
+
+          # Expect updated timestamp
+          oldUpdated = (new Date(@project["updated_at"])).valueOf()
+          newUpdated = (new Date(resp["body"]["updated_at"])).valueOf()
+          expect(oldUpdated).to.be.lt(newUpdated)
+
+        .then -> done()
+        .catch done
 
     it "allows the change of content", (done) ->
       content = [{

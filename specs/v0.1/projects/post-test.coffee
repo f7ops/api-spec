@@ -69,6 +69,27 @@ describe "POST /projects", ->
         it "has ['updated_at']", ->
           expect(@resp["body"]['updated_at']).to.be.a('string')
 
+        it "has ['name']", ->
+          expect(@resp["body"]['name']).to.be.a('string')
+          expect(@resp["body"]['name']).to.be.eq("")
+
+    describe "settable props", ->
+      before (done) ->
+        @priority = 24
+        @name = "herp"
+        attrs = {priority: @priority, name: @name}
+        createProject(attrs, @agent)
+          .then (resp) =>
+            @resp = resp
+          .then -> done()
+          .catch done
+
+      it "includes 'priority'", ->
+        expect(@resp["body"]["priority"]).to.be.eq(@priority)
+
+      it "includes 'name'", ->
+        expect(@resp["body"]["name"]).to.be.eq(@name)
+
     describe "does not allow a user id to be set", ->
       before (done) ->
         otherUserAgent = null
