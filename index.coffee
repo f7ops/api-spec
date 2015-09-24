@@ -15,6 +15,9 @@ require('dotenv').load()
 
 console.log "API Path: #{process.env.API_PATH}"
 
+# api general
+require('./specs/v0.1/me/general-test')
+
 # /sign-up
 require('./specs/v0.1/sign-up/post-test')
 require('./specs/v0.1/sign-up/members/post-test')
