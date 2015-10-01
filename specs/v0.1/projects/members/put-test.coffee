@@ -59,15 +59,27 @@ describe "PUT /projects/{id}", ->
 
   context "as owning user", ->
     before (done) ->
+      @originalContent = [
+        {
+            "type": "project",
+            "description": "",
+            "contents": [],
+            "name": "Hello World"
+        }
+      ]
+      @originalPriority = 45
       genAgentWithNewUserSession()
         .then (agent) => @agent = agent
-        .then => createProject({}, @agent)
+        .then => createProject({
+          priority: @originalPriority,
+          content: @originalContent
+        }, @agent)
         .then (resp) => @project = resp["body"]
         .then -> done()
         .catch done
 
     it "allows the change of priority", (done) ->
-      priority = Math.round(Math.random() * 100)
+      @originalPriority = priority = Math.round(Math.random() * 100)
       updateProject(@project["id"], {priority: priority}, @agent)
         .then (resp) =>
           # Expect changed priority
@@ -85,8 +97,13 @@ describe "PUT /projects/{id}", ->
       name = "name1"
       updateProject(@project["id"], {name: name}, @agent)
         .then (resp) =>
-          # Expect changed priority
+          # Expect changed name
           expect(resp["body"]["name"]).to.eq(name)
+
+          # Expect same content
+          expect(resp["body"]["content"]).to.deep.eq(@originalContent)
+          # Expect same priority
+          expect(resp["body"]["priority"]).to.eq(@originalPriority)
 
           # Expect updated timestamp
           oldUpdated = (new Date(@project["updated_at"])).valueOf()
